@@ -73,23 +73,34 @@ function layerAlpha(progress: number, item: Floor, index: number, total: number)
   return 1;
 }
 
+function isBuffered(video: HTMLVideoElement, time: number) {
+  const ranges = video.buffered;
+  for (let index = 0; index < ranges.length; index += 1) {
+    if (time >= ranges.start(index) - 0.05 && time <= ranges.end(index) + 0.2) return true;
+  }
+  return false;
+}
+
 function FilmStack({ progress, floors }: { progress: number; floors: Floor[] }) {
   const refs = useRef<Record<string, HTMLVideoElement | null>>({});
+  const found = floors.findIndex((item) => progress >= item.from && progress < item.to);
+  const current = found === -1 ? floors.length - 1 : found;
 
   useEffect(() => {
-    floors.forEach((item) => {
+    floors.forEach((item, index) => {
       if (!item.video) return;
       const video = refs.current[item.video];
-      if (!video || layerAlpha(progress, item, floors.indexOf(item), floors.length) <= 0.01) return;
+      if (!video || layerAlpha(progress, item, index, floors.length) <= 0.01) return;
       const span = Math.max(0.001, item.to - item.from);
       const local = Math.min(1, Math.max(0, (progress - item.from) / span));
       const seek = () => {
         if (!Number.isFinite(video.duration) || video.duration <= 0) return;
         const next = Math.min(video.duration - 0.04, Math.max(0, local * video.duration));
+        if (!isBuffered(video, next)) return;
         if (Math.abs(video.currentTime - next) > 0.03) video.currentTime = next;
       };
-      if (video.readyState >= 1) seek();
-      else video.addEventListener("loadedmetadata", seek, { once: true });
+      if (video.readyState >= 2) seek();
+      else video.addEventListener("loadeddata", seek, { once: true });
     });
   }, [floors, progress]);
 
@@ -106,7 +117,7 @@ function FilmStack({ progress, floors }: { progress: number; floors: Floor[] }) 
             src={item.video}
             muted
             playsInline
-            preload="auto"
+            preload={index === current || index === current + 1 ? "auto" : "none"}
             poster={item.image}
             style={{ opacity: layerAlpha(progress, item, index, floors.length) }}
           />

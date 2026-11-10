@@ -6,3 +6,4 @@ server/data/*.jsonl
 .playwright-mcp
 .vercel
 palais-*.png
+.env*
