@@ -376,7 +376,10 @@ button, input, textarea { font: inherit; color: inherit; }
   padding-right: 8vw;
 }
 
-.location { padding-top: 7rem; }
+.location {
+  padding-top: 7rem;
+  text-align: center;
+}
 
 .location h2,
 .request h2 {
@@ -392,6 +395,7 @@ button, input, textarea { font: inherit; color: inherit; }
   width: min(100%, 980px);
   height: auto;
   display: block;
+  margin-inline: auto;
 }
 
 .places {
@@ -399,6 +403,7 @@ button, input, textarea { font: inherit; color: inherit; }
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
   margin-top: 2.5rem;
+  justify-items: center;
 }
 
 .places h3 {
@@ -409,7 +414,7 @@ button, input, textarea { font: inherit; color: inherit; }
 }
 
 .places p {
-  margin: 0;
+  margin: 0 auto;
   color: hsl(var(--stone));
   max-width: 36ch;
 }

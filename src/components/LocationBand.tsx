@@ -2,8 +2,8 @@ import { brand, places } from "../content/tower";
 
 export function LocationBand() {
   return (
-    <section className="location" aria-labelledby="terreno">
-      <h2 id="terreno">O terreno</h2>
+    <section className="location" aria-labelledby="localizacao">
+      <h2 id="localizacao">Localização</h2>
       <img src={brand.map} alt={brand.mapAlt} />
       <div className="places">
         {places.map((place) => (
